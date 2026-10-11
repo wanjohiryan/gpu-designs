@@ -5,22 +5,10 @@
     "sub": "Die Shot 裸片图库：{tags} 家厂商 · {items} 张裸片显微影像。",
     "brand": "HiEq",
     "avatar": "https://github.com/HiEq.png?size=64",
-    "bg": "images/home-bg.jpg",
-    "l2d": {
-      "desktop": {
-        "x": -0.2,
-        "y": 0,
-        "expr": -1
-      },
-      "mobile": {
-        "x": 5.2,
-        "y": -6.2,
-        "expr": -1
-      }
-    }
+    "bg": "images/home-bg.jpg"
   },
   "config": {
-    "adminHash": "386cc1fc613bf00865387cd578cc5c5bfd188f0167516ac44e41cfcc2119f5ab",
+    "adminHash": "p1$200000$6em9zNmGHPI4zpQQ7Q/dLQ==$MGxYChxF2xNmtl+J/4vD+BPtuxPUne7SOg9QJZ36X1o=",
     "github": {
       "token": "",
       "owner": "HiEq/Dieshot",
@@ -30,6 +18,118 @@
     }
   },
   "items": [
+    {
+      "id": "imuju7mdtdaqg7",
+      "title": "Pensando Elba DPU",
+      "desc": "TSMC 7nm",
+      "tags": [
+        "AMD"
+      ],
+      "src": "images/dieshot/amd/muju7mdu-Pensando-Elba-DPU-15.68x12.78x0.77mm.jpg",
+      "thumb": "images/dieshot/amd/muju7mdu-Pensando-Elba-DPU-15.68x12.78x0.77mm.thumb.jpg",
+      "file": "images/dieshot/amd/muju7mdu-Pensando-Elba-DPU-15.68x12.78x0.77mm.jpg",
+      "name": "Pensando Elba DPU 15.68x12.78x0.77mm...jpg",
+      "size": 4472954,
+      "w": 7837,
+      "h": 6384,
+      "addedAt": "2026-09-27T13:11:21.617Z"
+    },
+    {
+      "id": "imuju2u21haf2o",
+      "title": "Longxin 3A6000",
+      "desc": "Unknow",
+      "tags": [
+        "Longxin"
+      ],
+      "src": "images/dieshot/longxin/muju2u21-longxin-3a6000-9.98x11.59x0.31mm.jpg",
+      "thumb": "images/dieshot/longxin/muju2u21-longxin-3a6000-9.98x11.59x0.31mm.thumb.jpg",
+      "file": "images/dieshot/longxin/muju2u21-longxin-3a6000-9.98x11.59x0.31mm.jpg",
+      "name": "longxin  3a6000 9.98x11.59x0.31mm...jpg",
+      "size": 4136864,
+      "w": 7721,
+      "h": 6662,
+      "addedAt": "2026-09-27T13:07:38.281Z"
+    },
+    {
+      "id": "imujtzjk25nnyi",
+      "title": "NVSwitch v3",
+      "desc": "TSMC 10nm",
+      "tags": [
+        "NVIDIA"
+      ],
+      "src": "images/dieshot/nvidia/mujtzjk2-Nvlink-3.0-LR10-891-A1-7.95x19.79x0.77mm.jpg",
+      "thumb": "images/dieshot/nvidia/mujtzjk2-Nvlink-3.0-LR10-891-A1-7.95x19.79x0.77mm.thumb.jpg",
+      "file": "images/dieshot/nvidia/mujtzjk2-Nvlink-3.0-LR10-891-A1-7.95x19.79x0.77mm.jpg",
+      "name": "Nvlink 3.0 LR10-891-A1 7.95x19.79x0.77mm...jpg",
+      "size": 2405127,
+      "w": 7927,
+      "h": 3183,
+      "addedAt": "2026-09-27T13:05:04.706Z"
+    },
+    {
+      "id": "imujts24qc4ml9",
+      "title": "M100 Ultra",
+      "desc": "TSMC N5",
+      "tags": [
+        "Li Auto"
+      ],
+      "src": "images/dieshot/li-auto/mujts24q-M100-U-25.51x16.11x0.jpg",
+      "thumb": "images/dieshot/li-auto/mujts24q-M100-U-25.51x16.11x0.thumb.jpg",
+      "file": "images/dieshot/li-auto/mujts24q-M100-U-25.51x16.11x0.jpg",
+      "name": "M100 U 25.51x16.11x0.jpg",
+      "size": 7568072,
+      "w": 6667,
+      "h": 4525,
+      "addedAt": "2026-09-27T12:59:15.530Z"
+    },
+    {
+      "id": "imuj84zyb54606",
+      "title": "Cavium Thunder X",
+      "desc": "TSMC 28nm",
+      "tags": [
+        "Cavium"
+      ],
+      "src": "images/dieshot/cavium/muj84zyc-IMG_20260926_231508.jpg",
+      "thumb": "images/dieshot/cavium/muj84zyc-IMG_20260926_231508.thumb.jpg",
+      "file": "images/dieshot/cavium/muj84zyc-IMG_20260926_231508.jpg",
+      "name": "IMG_20260926_231508.jpg",
+      "size": 10690725,
+      "w": 3970,
+      "h": 3146,
+      "addedAt": "2026-09-27T02:53:27.683Z"
+    },
+    {
+      "id": "imuil7t2q2ccvq",
+      "title": "Helio G95",
+      "desc": "TSMC 12nm",
+      "tags": [
+        "MediaTek"
+      ],
+      "src": "images/dieshot/mediatek/muil7t2q-G95-MT6785v-8.20x8.04x0.jpg",
+      "thumb": "images/dieshot/mediatek/muil7t2q-G95-MT6785v-8.20x8.04x0.thumb.jpg",
+      "file": "images/dieshot/mediatek/muil7t2q-G95-MT6785v-8.20x8.04x0.jpg",
+      "name": "G95-MT6785v-8.20x8.04x0.jpg",
+      "size": 16974543,
+      "w": 9033,
+      "h": 9380,
+      "addedAt": "2026-09-26T16:11:47.570Z"
+    },
+    {
+      "id": "imuh2vsjj2bvro",
+      "title": "Power 7+",
+      "desc": "IBM 32nm SOI",
+      "tags": [
+        "IBM"
+      ],
+      "src": "images/dieshot/ibm/muh2vsjk-IBM-Power-7.png",
+      "thumb": "images/dieshot/ibm/muh2vsjk-IBM-Power-7.thumb.jpg",
+      "file": "images/dieshot/ibm/muh2vsjk-IBM-Power-7.png",
+      "name": "IBM Power 7+.png",
+      "size": 9376730,
+      "w": 2333,
+      "h": 1989,
+      "addedAt": "2026-09-25T14:50:47.743Z"
+    },
     {
       "id": "imuf7154iu9ub1",
       "title": "M5",
@@ -2063,22 +2163,6 @@
       "addedAt": "2026-05-09T05:46:12.769Z"
     },
     {
-      "id": "ds-13do-127",
-      "title": "Smithfield",
-      "desc": "Intel 90nm",
-      "tags": [
-        "Intel"
-      ],
-      "src": "images/dieshot/intel/pentuim-d-820-101k-13do.jpg",
-      "thumb": "images/dieshot/intel/pentuim-d-820-101k-13do.thumb.jpg",
-      "file": "images/dieshot/intel/pentuim-d-820-101k-13do.jpg",
-      "name": "pentuim D 820-101K.jpg",
-      "size": 1205603,
-      "w": 10876,
-      "h": 5529,
-      "addedAt": "2025-01-18T10:51:53.000Z"
-    },
-    {
       "id": "ds-1wpp-128",
       "title": "Knights Corner",
       "desc": "Intel 22nm",
@@ -3361,9 +3445,9 @@
     {
       "id": "ds-84lq-208",
       "title": "IBM Cell",
-      "desc": "Unknow",
+      "desc": "IBM 90nm SOI",
       "tags": [
-        "Sony"
+        "IBM"
       ],
       "src": "images/dieshot/sony/cell-84lq.jpg",
       "thumb": "images/dieshot/sony/cell-84lq.thumb.jpg",

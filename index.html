@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>HiEQ·HOME</title>
+<link rel="icon" type="image/jpeg" href="1.jpg">
+<link rel="apple-touch-icon" href="1.jpg">
 <meta name="description" content="一个小小的个人网页">
 <meta property="og:title" content="HiEQ·HOME">
 <meta property="og:description" content="一个小小的个人网页">
@@ -138,9 +140,10 @@ button{cursor:pointer;background:none;border:0;padding:0}
 }
 :root[data-theme="dark"] .admin-chip{color:#ff9f0a}
 
-/* 顶栏下拉超大菜单 */
+/* 顶栏下拉超大菜单：收紧成刚好包裹内容的圆角卡片 */
 .megamenu{
-  position:absolute;left:12px;right:12px;top:calc(var(--nav-h) + 14px);
+  position:absolute;left:12px;top:calc(var(--nav-h) + 16px);   /* 落在顶栏底边之下，不与顶栏重叠 */
+  width:max-content;max-width:calc(100vw - 24px);
   border-radius:18px;
   background:var(--glass-strong);
   -webkit-backdrop-filter:saturate(180%) blur(24px);
@@ -150,10 +153,12 @@ button{cursor:pointer;background:none;border:0;padding:0}
   opacity:0;transform:translateY(-6px);pointer-events:none;
   transition:opacity .28s ease,transform .28s ease;
 }
+/* 与顶栏之间的缝隙补一块透明热区：鼠标向下移动时不会「掉出」菜单 */
+.megamenu::before{content:"";position:absolute;left:0;right:0;top:-12px;height:14px}
 .megamenu.is-open{opacity:1;transform:none;pointer-events:auto}
-.megamenu-inner{max-width:var(--max);margin:0 auto;padding:34px 24px 42px}
-.mm-lead{font-size:24px;font-weight:700;letter-spacing:-.02em;margin:0 0 20px}
-.mm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.megamenu-inner{padding:20px 22px 22px}          /* 不再撑满整行，直接包裹主体内容 */
+.mm-lead{font-size:20px;font-weight:700;letter-spacing:-.02em;margin:0 0 14px}
+.mm-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
 .mm-card{
   display:flex;gap:14px;align-items:center;
   padding:12px;border-radius:14px;border:1px solid transparent;
@@ -178,6 +183,70 @@ main{flex:1 0 auto}
 .home-bg{
   position:fixed;inset:0;z-index:-1;
   background:var(--bg-alt) url("images/home-bg.jpg") center center / cover no-repeat;
+}
+/* 首页字体：Qualcomm Next（打包在 fonts/ 下，访客也用同一套） */
+@font-face{
+  font-family:'Qualcomm Next';
+  src:url('fonts/QualcommNext-Regular.ttf') format('truetype');
+  font-weight:400;font-style:normal;font-display:swap;
+}
+@font-face{
+  font-family:'Qualcomm Next';
+  src:url('fonts/QualcommNext-Medium.ttf') format('truetype');
+  font-weight:500;font-style:normal;font-display:swap;
+}
+/* 首页标题 + 跳转按钮：宽屏 = 水平靠左、竖直居中；竖屏/手机 = 水平居中、略微靠上 */
+.home-hero{
+  position:fixed;inset:0;z-index:5;pointer-events:none;
+  display:flex;flex-direction:column;justify-content:center;align-items:flex-start;
+  /* 上下留白相等 → 内容正好落在视口垂直中线 */
+  padding:calc(var(--nav-h, 64px) + 28px) clamp(28px, 7vw, 120px) calc(var(--nav-h, 64px) + 28px);
+  font-family:'Qualcomm Next', -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+.home-hero > *{pointer-events:auto}     /* 只有文字和按钮可点，其余区域留给视线跟踪 */
+.home-hero-inner{display:flex;flex-direction:column;align-items:center;gap:24px}   /* 标题与按钮相互居中对齐 */
+.home-title{
+  margin:0;font-weight:700;line-height:1.15;letter-spacing:-.01em;
+  font-size:clamp(30px, 4.6vw, 54px);   /* 基准值；JS 会缩字号塞进固定大小的方框 */
+  /* 与下方按钮同一套液态玻璃：圆角矩形 + 半透明 + 高斯模糊 + 内高光 */
+  display:flex;align-items:center;justify-content:center;
+  white-space:nowrap;overflow:hidden;
+  padding:10px 32px;border-radius:20px;
+  background:var(--glass);
+  -webkit-backdrop-filter:saturate(180%) blur(22px);backdrop-filter:saturate(180%) blur(22px);
+  border:1px solid var(--hairline);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.35), 0 12px 32px rgba(0,0,0,.18);
+  color:var(--fg);        /* 黑色（浅色模式）；深色模式下玻璃变深、字随之变亮保持可读 */
+}
+/* 打字机光标：逐字输入时跟随，完成后在末尾持续闪烁的 _ */
+.home-caret{
+  display:inline-block;margin-left:2px;
+  animation:caretBlink 1s steps(1, end) infinite;
+}
+@keyframes caretBlink{0%,49%{opacity:1}50%,100%{opacity:0}}
+.home-links{display:flex;gap:16px;flex-wrap:wrap;justify-content:center}
+/* 液态玻璃按钮：半透明填充 + 高斯模糊 + 圆角矩形 */
+.glass-btn{
+  display:inline-flex;align-items:center;justify-content:center;
+  height:54px;padding:0 28px;border-radius:20px;
+  color:var(--fg);font-size:17px;font-weight:400;text-decoration:none;
+  background:var(--glass);
+  -webkit-backdrop-filter:saturate(180%) blur(22px);backdrop-filter:saturate(180%) blur(22px);
+  border:1px solid var(--hairline);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.35), 0 12px 32px rgba(0,0,0,.18);
+  transition:transform .22s var(--spring), background .2s;
+}
+.glass-btn:hover{transform:translateY(-2px);background:var(--glass-strong)}
+.glass-btn:active{transform:scale(.97)}
+@media (max-width:720px){
+  /* 竖屏 / 手机：水平居中、略微靠上（底部留白把内容顶高），四周留足安全空隙 */
+  .home-hero{
+    align-items:center;justify-content:center;
+    padding:calc(var(--nav-h, 64px) + 18px) max(24px, env(safe-area-inset-right)) 22vh max(24px, env(safe-area-inset-left));
+  }
+  .home-title{font-size:clamp(24px, 6.5vw, 34px);text-align:center;padding:8px 22px}   /* 基准值；同样按按钮行宽度自动放大 */
+  .home-links{width:auto}
+  .glass-btn{height:50px;padding:0 22px;font-size:15.5px}
 }
 .section-head h2{animation:rise .6s cubic-bezier(.2,.8,.2,1) both}
 @keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
@@ -518,11 +587,22 @@ footer{
   background:var(--glass-strong);
   -webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.3), 0 4px 18px rgba(0,0,0,.08);
-  color:var(--fg2);font-size:13px;
+  color:var(--fg2);font-size:14px;                 /* 与顶栏文字一致 */
 }
 footer .fstats b{color:var(--fg);font-weight:600;font-variant-numeric:tabular-nums}
-footer .wrap{padding-top:14px;padding-bottom:14px;display:flex;gap:18px;flex-wrap:wrap;align-items:center}
+footer .wrap{
+  max-width:none;margin:0;                          /* 不再居中收窄，整体靠左 */
+  padding:14px 22px;                                /* 与底栏圆角边缘留出空隙 */
+  display:flex;gap:14px;flex-wrap:wrap;align-items:center;
+}
 footer .sep{opacity:.4}
+/* 友情链接：底栏中间偏右 */
+footer .foot-links{
+  margin-left:auto;margin-right:clamp(8px, 8vw, 160px);
+  display:flex;gap:10px;align-items:center;
+}
+footer .foot-links a{color:var(--fg2);text-decoration:none;transition:color .2s}
+footer .foot-links a:hover{color:var(--blue);text-decoration:none}
 
 /* ---------- 液态玻璃质感 + Apple 式动效（覆写层） ---------- */
 :root{--spring:cubic-bezier(.2,.9,.25,1.06);--ease:cubic-bezier(.2,.8,.2,1)}
@@ -635,18 +715,21 @@ footer .sep{opacity:.4}
 
 /* ---------- Live2D 桌宠（仅首页右下角；箭头可折叠到屏幕边缘） ----------
    位置可由管理模式鼠标拖拽微调：--l2d-x=右移（%视口宽，负=左移）、--l2d-y=上移（%视口高，负=下移）；
-   --l2d-right 是各断点的默认贴边距离，位置与折叠隐藏都用它换算 */
+   --l2d-right 是各断点的默认贴边距离，--l2d-half 是盒宽的一半（大小补偿用），
+   --l2d-right-px = 实际右偏移（位置 + 大小补偿），定位与折叠隐藏共用，保证改大小不跑位 */
 .l2d{
   --l2d-right:2px;
-  position:fixed;right:calc(var(--l2d-right) - var(--l2d-x, 0px));bottom:calc(0px + var(--l2d-y, 0px));z-index:70;
-  width:300px;height:340px;pointer-events:none;
+  --l2d-half:150px;
+  --l2d-right-px: calc(var(--l2d-right) - var(--l2d-x, 0px) - (var(--l2d-scale, 1) - 1) * var(--l2d-half));
+  position:fixed;right:var(--l2d-right-px);bottom:calc(0px + var(--l2d-y, 0px));z-index:70;
+  width:calc(300px * var(--l2d-scale, 1));height:calc(340px * var(--l2d-scale, 1));pointer-events:none;
   transition:transform .45s var(--spring), right .25s var(--ease), bottom .25s var(--ease);
 }
 .l2d[hidden]{display:none}
 .l2d canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:auto;cursor:grab}
-/* 折叠隐藏：整箱推到屏幕右缘之外 —— 位移 = 自身宽度 + 当前贴边距离 + 4px 安全缝，
-   即「把自己左边缘送到视口右边缘外」，与拖到哪、屏宽多少都无关，藏起来只剩侧边箭头 */
-.l2d.is-hidden{transform:translateX(calc(100% + 4px + var(--l2d-right) - var(--l2d-x, 0px)))}
+/* 折叠隐藏：整箱推到屏幕右缘之外 —— 位移 = 自身宽度 + 当前右偏移 + 4px 安全缝，
+   即「把自己左边缘送到视口右边缘外」，与拖到哪、屏宽多少、多大尺寸都无关 */
+.l2d.is-hidden{transform:translateX(calc(100% + 4px + var(--l2d-right-px)))}
 .l2d-tab{
   position:absolute;left:-36px;bottom:28px;width:36px;height:64px;
   pointer-events:none;display:flex;align-items:center;justify-content:center;
@@ -662,6 +745,21 @@ footer .sep{opacity:.4}
 .l2d-tab:hover{color:var(--blue)}
 .l2d-tab svg{width:18px;height:18px;transition:transform .35s var(--spring)}
 .l2d.is-hidden .l2d-tab svg{transform:rotate(180deg)}
+/* 访客用的桌宠样式入口（齿轮）：显隐与收起箭头完全一致 */
+.l2d-gear{
+  position:absolute;left:-36px;bottom:100px;width:36px;height:36px;
+  pointer-events:none;display:flex;align-items:center;justify-content:center;
+  border-radius:12px 0 0 12px;color:var(--fg);
+  background:var(--glass-strong);
+  -webkit-backdrop-filter:saturate(180%) blur(16px);backdrop-filter:saturate(180%) blur(16px);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.3), inset 0 0 0 1px var(--hairline), -2px 2px 12px rgba(0,0,0,.12);
+  opacity:0;transition:opacity .2s,color .2s;
+}
+.l2d:hover .l2d-gear,
+.l2d.show-tab .l2d-gear{opacity:1;pointer-events:auto}
+.l2d.is-hidden .l2d-gear{display:none}          /* 折叠后只留一个展开箭头 */
+.l2d-gear:hover{color:var(--blue)}
+.l2d-gear svg{width:18px;height:18px}
 /* ---------- Live2D 编辑模式（管理模式）：鼠标拖拽调位置 + 切换表情 ---------- */
 .l2d.is-editing{transition:transform .45s var(--spring)}   /* 拖拽时不给动画插值，模型跟手 */
 .l2d.is-editing.is-dragging{transition:none}
@@ -691,7 +789,18 @@ footer .sep{opacity:.4}
 }
 .l2d-chip:hover{transform:translateY(-1px);color:var(--fg)}
 .l2d-chip.is-on{color:#fff;background:var(--blue);border-color:transparent}
-@media (max-width:640px){ .l2d{--l2d-right:8px;width:220px;height:250px} }
+.l2d-editbar input[type=range]{width:150px;accent-color:var(--blue);cursor:pointer}
+.l2d-switch{
+  width:44px;height:24px;padding:0;border-radius:999px;position:relative;cursor:pointer;
+  background:var(--bg-elev);border:1px solid var(--hairline);transition:background .2s,border-color .2s;
+}
+.l2d-switch .knob{
+  position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;
+  box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .22s var(--spring);
+}
+.l2d-switch[aria-checked="true"]{background:var(--blue);border-color:transparent}
+.l2d-switch[aria-checked="true"] .knob{transform:translateX(20px)}
+@media (max-width:640px){ .l2d{--l2d-right:8px;--l2d-half:110px;width:calc(220px * var(--l2d-scale, 1));height:calc(250px * var(--l2d-scale, 1))} }
 
 @media (max-width:640px){
   .nav-menu{gap:0}
@@ -733,7 +842,7 @@ footer .sep{opacity:.4}
   .misc-wall{height:calc(100vh - 190px);height:calc(100dvh - 190px);min-height:340px;padding:0 28px 70px}
   .misc-list{padding:0 28px 70px;grid-template-columns:repeat(2,1fr);gap:10px}
   .misc-cell .cap{font-size:12px}
-  .l2d{--l2d-right:0px;width:190px;height:225px;bottom:calc(var(--footer-stack, 0px) + var(--l2d-y, 0px))}  /* 模型可见底边对齐页脚上缘 */
+  .l2d{--l2d-right:0px;--l2d-half:95px;width:calc(190px * var(--l2d-scale, 1));height:calc(225px * var(--l2d-scale, 1));bottom:calc(var(--footer-stack, 0px) + var(--l2d-y, 0px))}  /* 模型可见底边对齐页脚上缘 */
   .l2d-tab{left:-34px;width:34px;height:56px;bottom:calc(18px + env(safe-area-inset-bottom))}
   .modal{padding:12px}
   .sheet{max-height:92vh;padding:22px 18px;border-radius:20px}
@@ -844,6 +953,15 @@ footer .sep{opacity:.4}
   <!-- ================= 首页（个人主页：整屏背景图） ================= -->
   <section class="view" id="view-home">
     <div class="home-bg" id="homeBg"></div>
+    <div class="home-hero">
+      <div class="home-hero-inner">
+        <h1 class="home-title">HiEQ is here~</h1>
+        <div class="home-links">
+          <a class="glass-btn" href="https://github.com/HiEq" target="_blank" rel="noopener">Github主页</a>
+          <a class="glass-btn" href="https://space.bilibili.com/571650607" target="_blank" rel="noopener">Bilibili主页</a>
+        </div>
+      </div>
+    </div>
   </section>
 
   <!-- ================= Layout 版块 ================= -->
@@ -868,6 +986,21 @@ footer .sep{opacity:.4}
             <button class="dd-opt" role="menuitem" data-v="new">最新在前</button>
             <button class="dd-opt" role="menuitem" data-v="old">最早在前</button>
             <button class="dd-opt" role="menuitem" data-v="az">按标题排序</button>
+          </div>
+        </div>
+        <div class="dd" id="gridDD">
+          <button class="dd-btn" id="gridBtn" aria-haspopup="true" aria-expanded="false" title="显示选项">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg>
+            <span id="gridLabel">自动排列</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 9l7 7 7-7"/></svg>
+          </button>
+          <div class="dd-menu" id="gridMenu" role="menu">
+            <button class="dd-opt" role="menuitem" data-v="0">自动排列</button>
+            <button class="dd-opt" role="menuitem" data-v="2">每行 2 列</button>
+            <button class="dd-opt" role="menuitem" data-v="3">每行 3 列</button>
+            <button class="dd-opt" role="menuitem" data-v="4">每行 4 列</button>
+            <button class="dd-opt" role="menuitem" data-v="5">每行 5 列</button>
+            <button class="dd-opt" role="menuitem" data-v="6">每行 6 列</button>
           </div>
         </div>
         <div class="count" id="count"></div>
@@ -914,13 +1047,20 @@ footer .sep{opacity:.4}
   <div class="wrap">
     <span id="footName">HiEQ</span>
     <span class="sep">|</span>
-    <span>由 GitHub Pages 托管 · 单文件静态站</span>
+    <span>Cloudflare Pages</span>
     <span class="sep">|</span>
     <a href="CATALOG.md">厂商目录清单</a>
     <span class="sep">|</span>
-    <span class="fstats">总访问 <b id="statViews">—</b> · 当前在线 <b id="statOnline">—</b></span>
+    <span class="fstats">总访问 <b id="statViews">—</b> · 近 15 分钟访客 <b id="statOnline">—</b></span>
     <span class="sep">|</span>
     <span id="footYear"></span>
+    <div class="foot-links">
+      <span>友情链接</span>
+      <span class="sep">·</span>
+      <a href="https://raku404.com/#aboutme" target="_blank" rel="noopener">羽梦千景</a>
+      <span class="sep">·</span>
+      <a href="http://yieeesh.com/" target="_blank" rel="noopener">Yieeesh</a>
+    </div>
   </div>
 </footer>
 
@@ -1052,17 +1192,17 @@ footer .sep{opacity:.4}
     <div class="divider"></div>
     <div class="mini-title">主页 Live2D 桌宠</div>
     <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-      <button class="btn tint sm" id="btnL2dEdit">调整位置与表情…</button>
+      <button class="btn tint sm" id="btnL2dEdit">调整位置、表情与大小…</button>
       <button class="btn ghost sm" id="btnL2dReset">恢复默认位置</button>
     </div>
     <div class="count" id="l2dHint" style="margin-top:8px"></div>
-    <p class="hint" style="margin-top:8px">进入编辑模式后，直接用鼠标拖拽桌宠即可调整它在首页的位置，工具条里还能切换表情。电脑端与移动端各存一份、互不影响（想调手机上的效果请用手机打开本页）。</p>
+    <p class="hint" style="margin-top:8px">进入编辑模式后，直接用鼠标拖拽桌宠即可调整它在首页的位置，工具条里还能切换表情、拖滑块改大小、开关表情随机展示（开启后和移动端一样自动随机切换）。电脑端与移动端各存一份、互不影响（想调手机上的效果请用手机打开本页）；设置只存本机浏览器，不写入仓库、无需重新部署。</p>
 
     <div class="divider"></div>
     <div class="row2">
       <div>
         <div class="mini-title">修改管理口令</div>
-        <div class="field"><input id="newPw" type="password" placeholder="新的管理口令（至少 4 位）" autocomplete="new-password"></div>
+        <div class="field"><input id="newPw" type="password" placeholder="新的管理口令（至少 8 位，建议长随机）" autocomplete="new-password"></div>
         <button class="btn ghost sm" id="btnPw">更新口令</button>
       </div>
       <div>
@@ -1099,19 +1239,35 @@ footer .sep{opacity:.4}
   <button class="l2d-tab" id="l2dTab" title="折叠 / 展开模型" aria-label="折叠 / 展开模型">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 6l6 6-6 6"/></svg>
   </button>
+  <button class="l2d-gear" id="l2dGear" title="桌宠样式设置" aria-label="桌宠样式设置">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1.03 1.56V21a2 2 0 1 1-4 0v-.09A1.7 1.7 0 0 0 8.9 19.3a1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-1.56-1.03H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.7 8.9a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1.03-1.56V3a2 2 0 1 1 4 0v.09c0 .68.4 1.3 1.03 1.56a1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.4 9v.01c0 .68.4 1.24 1.03 1.56H21a2 2 0 1 1 0 4h-.09c-.63 0-1.24.4-1.51 1.03z"/></svg>
+  </button>
 </div>
 
 <!-- ============ Live2D 编辑模式工具条（拖拽调位置 + 切换表情，仅管理模式可见） ============ -->
 <div class="l2d-editbar hidden" id="l2dEditBar">
   <div class="ttl"><span id="l2dEditTip">拖拽桌宠调整位置</span> · <b id="l2dPosText">x +0% · y +0%</b></div>
   <div class="row">
+    <span class="ttl">模型</span>
+    <div class="l2d-expr-chips" id="l2dModelChips"></div>
+  </div>
+  <div class="row">
     <span class="ttl">表情</span>
     <div class="l2d-expr-chips" id="l2dExprChips"></div>
   </div>
   <div class="row">
+    <span class="ttl">大小</span>
+    <input type="range" id="l2dSize" min="50" max="180" step="5" value="100" aria-label="桌宠大小">
+    <b class="ttl" id="l2dSizeVal">100%</b>
+  </div>
+  <div class="row">
+    <span class="ttl">表情随机展示</span>
+    <button class="l2d-switch" id="l2dRandom" role="switch" aria-checked="false" aria-label="表情随机展示"><span class="knob"></span></button>
+  </div>
+  <div class="row">
     <button class="btn ghost sm" id="l2dEditReset">恢复默认</button>
     <button class="btn ghost sm" id="l2dEditCancel">取消</button>
-    <button class="btn tint sm" id="l2dEditSave">保存位置</button>
+    <button class="btn tint sm" id="l2dEditSave">保存</button>
   </div>
 </div>
 
@@ -1177,6 +1333,8 @@ var EN = {
   /* 顶栏与导航 */
   '首页':'Home', 'Layout 版块':'Layout section', '搜索图片':'Search images', '管理模式':'Admin',
   '打开管理面板':'Open admin panel', '夜间 / 日间模式':'Toggle dark / light', 'HiEq 的 GitHub 主页':'HiEq on GitHub',
+  /* 首页标题与跳转按钮 */
+  'HIEQ的小站':"HIEQ's Site", 'Github主页':'GitHub', 'Bilibili主页':'Bilibili',
   '{tags} 家厂商 · {items} 张 Dieshot · 支持搜索与标签筛选':'{tags} Manufactures · {items} Dieshot · search and filter by tags',
   /* Layout 版块 */
   '搜索标题、描述或标签':'Search title, description or tags', '最新在前':'Newest first', '最早在前':'Oldest first',
@@ -1206,11 +1364,20 @@ var EN = {
   'Personal Access Token':'Personal Access Token', '仓库所有者 / 仓库名':'Owner / repository',
   '分支':'Branch', '图片目录':'Image directory', '清单文件路径':'Manifest path',
   '测试连接':'Test connection', '保存设置':'Save settings', '修改管理口令':'Change password',
-  '新的管理口令（至少 4 位）':'New password (min 4 chars)', '更新口令':'Update password',
+  '新的管理口令（至少 8 位，建议长随机）':'New password (min 8 chars, long & random advised)', '更新口令':'Update password',
+  '尝试太频繁，请 {s} 秒后再试':'Too many attempts — try again in {s}s',
+  '连续错误次数过多，已暂时锁定':'Too many failed attempts — temporarily locked',
   '当前图库':'Current gallery', '补齐缩略图':'Backfill thumbnails', '重新加载清单':'Reload manifest',
   '退出管理模式':'Exit admin',
   /* 页脚 */
-  '由 GitHub Pages 托管 · 单文件静态站':'Hosted on GitHub Pages · single-file static site',
+  'Cloudflare Pages':'Cloudflare Pages', '友情链接':'Friend links',
+  '自动排列':'Auto layout', '每行 {n} 列':'{n} per row', '显示选项':'Display options',
+  '每行 2 列':'2 per row', '每行 3 列':'3 per row', '每行 4 列':'4 per row',
+  '每行 5 列':'5 per row', '每行 6 列':'6 per row',
+  '· 近 15 分钟访客':'· Visitors (15 min)', '本机草稿':'local draft',
+  '拖拽、粘贴或点击选择图片，填写信息后保存。改动将写入 gallery.json 与图片目录。':'Drag, paste, or click to select images, fill in the info and save. Changes go to gallery.json and the image folder.',
+  '填写后，上传/删除会通过 GitHub Contents API 直接提交到仓库，访客打开网页即可看到最新图片。':'Once filled in, uploads and deletions commit straight to the repo via the GitHub Contents API — visitors see it on refresh.',
+  'Token 仅保存在你自己的浏览器 localStorage 中，不会写入仓库。':'The token stays in your browser\'s localStorage and is never written to the repo.',
   '厂商目录清单':'Catalog',
   '杂图':'Misc', '{items} 张杂图 · 点击查看大图':'{items} images · click to view',
   '全部列表':'All images', '滚动墙':'Scroll wall',
@@ -1219,19 +1386,22 @@ var EN = {
   '主页背景':'Homepage background', '更换背景图…':'Change background…', '当前：{v}':'Current: {v}',
   /* 主页 Live2D（位置 / 表情编辑） */
   '主页 Live2D 桌宠':'Homepage Live2D pet',
-  '调整位置与表情…':'Adjust position & expression…',
+  '调整位置、表情与大小…':'Adjust position, expression & size…',
   '恢复默认位置':'Reset position',
-  '进入编辑模式后，直接用鼠标拖拽桌宠即可调整它在首页的位置，工具条里还能切换表情。电脑端与移动端各存一份、互不影响（想调手机上的效果请用手机打开本页）。':'In edit mode, drag the pet with your mouse to place it on the homepage and switch its expression in the toolbar. Desktop and mobile keep separate settings and never affect each other (open this page on your phone to tune the mobile view).',
+  '进入编辑模式后，直接用鼠标拖拽桌宠即可调整它在首页的位置，工具条里还能切换表情、拖滑块改大小、开关表情随机展示（开启后和移动端一样自动随机切换）。电脑端与移动端各存一份、互不影响（想调手机上的效果请用手机打开本页）；设置只存本机浏览器，不写入仓库、无需重新部署。':'In edit mode, drag the pet with your mouse to place it on the homepage; the toolbar also lets you switch its expression, resize it with the slider, and toggle random expression (auto-switches like on mobile). Desktop and mobile keep separate settings and never affect each other (open this page on your phone to tune the mobile view). Settings stay in this browser only — nothing is written to the repo, no redeploy needed.',
+  'Live2D 设置已保存到本机':'Live2D settings saved on this device',
   '电脑端':'Desktop', '移动端':'Mobile',
-  '位置（{d}）{p} · 表情：{e}':'Position ({d}) {p} · Expression: {e}',
+  '位置（{d}）{p} · 表情：{e} · 大小 {s} · 随机 {r} · 模型 {m}':'Position ({d}) {p} · Expression: {e} · Size {s} · Random {r} · Model {m}',
+  '大小':'Size', '桌宠大小':'Pet size', '表情随机展示':'Random expression', '开':'On', '关':'Off', '模型':'Model',
   '拖拽桌宠调整位置':'Drag the pet to reposition', '拖拽桌宠调整位置（{d}）':'Drag the pet to reposition ({d})', '表情':'Expression',
   '默认':'Default', '表情{n}':'Expression {n}',
   '表情1':'Expression 1', '表情2':'Expression 2', '表情3':'Expression 3',
   '表情4':'Expression 4', '表情5':'Expression 5', '表情6':'Expression 6',
-  '恢复默认':'Reset', '保存位置':'Save position',
+  '恢复默认':'Reset',
+  '桌宠样式设置':'Pet style settings', '访客样式：拖拽调整桌宠（{d}）':'Visitor style: drag the pet ({d})',
   '已恢复默认位置':'Position reset to default', '已放弃 Live2D 的改动':'Live2D changes discarded',
   '先进入管理模式':'Enter admin mode first',
-  '总访问':'Visits', '当前在线':'Online now',
+  '总访问':'Visits', '近 15 分钟访客':'Visitors (15 min)',
   '主页背景已更新':'Background updated',
   '折叠 / 展开模型':'Collapse / expand the model',
   /* 动态文案模板 */
@@ -1268,6 +1438,8 @@ var DYN = [
   [/^开始为 (\d+) 张图片生成缩略图…$/, 'Generating thumbnails for $1 images…'],
   [/^背景更新失败：(.+)$/, 'Background update failed: $1'],
   [/^已补齐 (\d+) 张缩略图$/, 'Backfilled $1 thumbnails'],
+  [/^已提交 (\d+) 个文件（1 次部署）$/, 'Committed $1 files (1 deployment)'],
+  [/^待提交$/, 'pending commit'],
   [/^正在准备下载…$/, 'Preparing download…'],
   [/^信息已更新$/, 'Info updated'],
   [/^已同步到 GitHub 仓库$/, 'Synced to GitHub repo'],
@@ -1275,7 +1447,7 @@ var DYN = [
   [/^已导出 gallery\.json，可直接提交到仓库根目录$/, 'Exported gallery.json — commit it to the repo root'],
   [/^所有图片都已有缩略图$/, 'All images already have thumbnails'],
   [/^已重新加载清单$/, 'Manifest reloaded'],
-  [/^口令至少 4 位$/, 'Password must be at least 4 characters'],
+  [/^口令至少 8 位$/, 'Password must be at least 8 characters'],
   [/^已进入管理模式$/, 'Admin mode unlocked'],
   [/^已退出管理模式$/, 'Exited admin mode'],
   [/^正在连接…$/, 'Connecting…'],
@@ -1370,6 +1542,41 @@ function b64(buf){
   for(var i=0;i<u8.length;i+=CH){ s += String.fromCharCode.apply(null, u8.subarray(i, i+CH)); }
   return btoa(s);
 }
+/* ---------- 管理口令哈希：PBKDF2-SHA256（20 万次迭代 + 每口令随机盐） ----------
+   安全说明：纯静态站没有后端，前端**不可能藏住秘密** —— adminHash 只是一把「界面锁」，
+   真正的权限边界是 GitHub Token（只存在管理员自己的浏览器 localStorage，绝不入库；
+   没有 Token 就算进得了管理模式也改不了仓库）。这里改用慢哈希，是为了让离线撞库
+   的成本高到不划算 —— 但弱口令依然不安全，请用长随机口令。
+   格式：p1$<迭代次数>$<盐 base64>$<派生哈希 base64>；旧的纯 SHA-256 十六进制仍可验证。 */
+var PW_ITER = 200000;
+function bytesFromB64(s){
+  try{
+    var bin = atob(s || ''), out = new Uint8Array(bin.length);
+    for(var i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+    return out;
+  }catch(e){ return new Uint8Array(0); }
+}
+async function pbkdf2B64(password, saltBytes, iter){
+  var key = await crypto.subtle.importKey('raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveBits']);
+  var bits = await crypto.subtle.deriveBits({name:'PBKDF2', salt: saltBytes, iterations: iter, hash:'SHA-256'}, key, 256);
+  return b64(bits);
+}
+async function hashPasswordNew(password){
+  if(!(window.crypto && crypto.subtle && crypto.subtle.importKey)) return 'plain:' + password;
+  var salt = new Uint8Array(16);
+  crypto.getRandomValues(salt);
+  return 'p1$' + PW_ITER + '$' + b64(salt) + '$' + await pbkdf2B64(password, salt, PW_ITER);
+}
+async function verifyPassword(password, stored){
+  stored = stored || DEFAULT_CFG.adminHash;
+  if(stored && stored.indexOf('p1$') === 0){
+    if(!(window.crypto && crypto.subtle && crypto.subtle.importKey)) return false;
+    var p = stored.split('$');
+    var iter = parseInt(p[1], 10) || PW_ITER;
+    try{ return (await pbkdf2B64(password, bytesFromB64(p[2] || ''), iter)) === p[3]; }catch(e){ return false; }
+  }
+  return (await sha256(password)) === stored;    /* 兼容旧的纯 SHA-256 十六进制 */
+}
 function lsGet(k, d){ try{ var v=localStorage.getItem(k); return v?JSON.parse(v):d; }catch(e){ return d; } }
 function lsSet(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
 
@@ -1403,6 +1610,27 @@ var IDB = (function(){
   };
 })();
 
+/* ---------- 服务端鉴权（Cloudflare Pages Functions，可选） ----------
+   部署到 Cloudflare Pages 时：口令校验与 GitHub 写入都在服务端完成 ——
+   口令与 GitHub Token 都只存在 Worker 的加密环境变量里，不进浏览器、不进仓库。
+   没有后端时（GitHub Pages / 本地直开）自动退回「本地哈希 + 本机 Token」模式。 */
+var LS_SESSION = 'layout.adminSession';
+function getSession(){ try{ return localStorage.getItem(LS_SESSION) || ''; }catch(e){ return ''; } }
+function setSession(v){ try{ v ? localStorage.setItem(LS_SESSION, v) : localStorage.removeItem(LS_SESSION); }catch(e){} }
+function serverMode(){ return !!getSession(); }
+async function apiLogin(pw){
+  try{
+    var res = await fetch('/api/login', {
+      method:'POST', cache:'no-store',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({password: pw})
+    });
+    if(res.status === 404 || res.status === 405) return {mode:'local'};   /* 没有后端 → 退回本地校验 */
+    var d = await res.json();
+    return {mode:'server', ok: !!(res.ok && d && d.ok), token: (d && d.token) || ''};
+  }catch(e){ return {mode:'local'}; }
+}
+
 /* ---------- GitHub 接口 ---------- */
 function ghCfg(){
   var c = state.cfg.github || {};
@@ -1411,15 +1639,33 @@ function ghCfg(){
 }
 function ghReady(){
   var c = ghCfg();
-  return !!(c.token && c.owner && c.manifest);
+  return !!getSession() || !!(c.token && c.owner && c.manifest);   /* 有服务端会话即可写 */
 }
 function ghUrl(path){
   var c = ghCfg();
   return 'https://api.github.com/repos/' + c.owner + '/contents/' + path.split('/').map(encodeURIComponent).join('/');
 }
 async function ghApi(path, opts){
-  var c = ghCfg();
   opts = opts || {};
+  var session = getSession();
+  if(session){
+    /* 服务端代理：GitHub Token 留在 Worker 里，浏览器只带会话凭证 */
+    try{
+      var r = await fetch('/api/gh', {
+        method:'POST', cache:'no-store',
+        headers:{'Content-Type':'application/json', 'X-Admin-Token': session},
+        body: JSON.stringify({method: opts.method || 'GET', path: path, body: opts.body ? String(opts.body) : null})
+      });
+      if(r.status === 401){
+        setSession('');
+        if(state.admin){ state.admin = false; setAdminUI(); toast('会话已过期，请重新登录'); }
+      }
+      var payload = null;
+      try{ payload = await r.json(); }catch(e){}
+      return {ok:r.ok, status:r.status, data:payload};
+    }catch(e){ return {ok:false, status:0, data:null}; }
+  }
+  var c = ghCfg();
   opts.headers = Object.assign({
     'Authorization': 'token ' + c.token,
     'Accept': 'application/vnd.github+json'
@@ -1449,6 +1695,40 @@ async function ghDelFile(path, message){
     sha: meta.data.sha,
     branch: c.branch || 'main'
   })});
+}
+
+/* 多文件一次提交：一次上传的 原图 + 缩略图 + 清单 合成同一个 commit，
+   只触发一次 Cloudflare 部署，清单与图片永远同时生效；
+   没有服务端会话时退回逐个写入（GitHub Pages / 本地场景） */
+async function ghCommitFiles(files, message){
+  files = files || [];
+  var session = getSession();
+  if(session && files.length){
+    try{
+      var r = await fetch('/api/gh', {
+        method:'POST', cache:'no-store',
+        headers:{'Content-Type':'application/json', 'X-Admin-Token': session},
+        body: JSON.stringify({
+          op:'commit', message: message || 'update content',
+          branch: (ghCfg().branch || 'main'),
+          files: files.map(function(f){ return {path: f.path, content: b64(f.buf)}; })
+        })
+      });
+      if(r.status === 401){
+        setSession('');
+        if(state.admin){ state.admin = false; setAdminUI(); toast('会话已过期，请重新登录'); }
+      }
+      var d = null;
+      try{ d = await r.json(); }catch(e){}
+      return {ok:r.ok, status:r.status, data:d};
+    }catch(e){ return {ok:false, status:0, data:null}; }
+  }
+  var last = {ok:true, status:200, data:null};
+  for(var i = 0; i < files.length; i++){
+    last = await ghPutFile(files[i].path, files[i].buf, (i === 0 && message) ? message : ('add ' + files[i].path));
+    if(!last.ok) return last;
+  }
+  return last;
 }
 
 /* 接口设置区的提示条 */
@@ -1599,8 +1879,15 @@ async function loadManifest(){
   (localItems || []).forEach(function(li){ (li.coll === 'misc' ? state.misc : state.dieshot).unshift(li); });
   enterCollection('dieshot');
 }
-async function saveManifest(message, coll){
-  /* 写回当前版块的清单（gallery.json 或 misc.json）；否则存本机草稿 */
+/* 写进仓库/草稿的 site 字段：Live2D 的位置与表情是「这台设备 + 这个浏览器」的偏好，
+   永远不入库 —— 改桌宠只写本机，不触发仓库提交与 Pages 重建 */
+function siteForManifest(){
+  var s = Object.assign({}, state.site);
+  delete s.l2d;
+  return s;
+}
+/* 组装清单文件（不落盘）：saveManifest 与批量提交共用 */
+function manifestPayload(coll){
   coll = coll || state.active;
   var isMisc = (coll === 'misc');
   var gc = ghCfg();
@@ -1609,7 +1896,7 @@ async function saveManifest(message, coll){
     ? {version: 1, items: list}
     : {
     version: 1,
-    site: state.site,
+    site: siteForManifest(),
     config: {
       adminHash: state.cfg.adminHash || DEFAULT_CFG.adminHash,
       /* 安全：Token 绝不写进清单/仓库，只存在你自己的浏览器 localStorage 里 */
@@ -1617,9 +1904,20 @@ async function saveManifest(message, coll){
     },
     items: list
   };
-  var name = isMisc ? 'misc.json' : (gc.manifest || 'gallery.json');
+  return {
+    name: isMisc ? 'misc.json' : (gc.manifest || 'gallery.json'),
+    buf: new TextEncoder().encode(JSON.stringify(payload, null, 2)),
+    payload: payload
+  };
+}
+async function saveManifest(message, coll){
+  /* 写回当前版块的清单（gallery.json 或 misc.json）；否则存本机草稿 */
+  coll = coll || state.active;
+  var isMisc = (coll === 'misc');
+  var m = manifestPayload(coll);
+  var payload = m.payload;
   if(ghReady()){
-    var r = await ghPutFile(name, new TextEncoder().encode(JSON.stringify(payload, null, 2)), message || ('update ' + name));
+    var r = await ghPutFile(m.name, m.buf, message || ('update ' + m.name));
     if(r.ok){ state.draft=false; lsSet(isMisc ? LS.draftMisc : LS.draft, null); toast('已同步到 GitHub 仓库'); return true; }
     toast('同步失败（' + r.status + '）：' + (r.data && r.data.message ? r.data.message : '请检查 Token 与仓库设置'));
     return false;
@@ -1658,15 +1956,26 @@ function buildNav(){
       var p = document.createElementNS('http://www.w3.org/2000/svg','path');
       p.setAttribute('d','M5 9l7 7 7-7'); svg.appendChild(p); a.appendChild(svg);
       a.addEventListener('mouseenter', function(){ openMenu(n); });
+      a.addEventListener('mouseleave', scheduleCloseMenu);   /* 横向移开 Layout（仍在顶栏上）→ 稍后收起 */
     }
     a.addEventListener('click', function(){ closeMenu(); });
     wrap.appendChild(a);
   });
-  $('navShell').addEventListener('mouseleave', closeMenu);
+  $('navShell').addEventListener('mouseleave', scheduleCloseMenu);
+  $('navShell').addEventListener('mouseenter', cancelCloseMenu);
+  /* 鼠标进入展开卡片（含与顶栏之间的热区）→ 取消收起；离开卡片 → 收起 */
+  $('megamenu').addEventListener('mouseenter', cancelCloseMenu);
+  $('megamenu').addEventListener('mouseleave', scheduleCloseMenu);
 }
-var menuOpenFor = null;
+var menuOpenFor = null, menuCloseTimer = 0;
+function scheduleCloseMenu(){          /* 收起加一点缓冲：鼠标往卡片移动的过程中不会被误收 */
+  clearTimeout(menuCloseTimer);
+  menuCloseTimer = setTimeout(closeMenu, 320);
+}
+function cancelCloseMenu(){ clearTimeout(menuCloseTimer); }
 function openMenu(n){
   if(!n.menu) return;
+  cancelCloseMenu();
   menuOpenFor = n.id;
   var inner = $('megamenuInner');
   inner.innerHTML = '';
@@ -1685,12 +1994,22 @@ function openMenu(n){
     grid.appendChild(card);
   });
   inner.appendChild(grid);
+  /* 卡片与触发它的导航项左对齐，并夹在视口内不贴边、不溢出 */
+  var item = document.querySelector('.nav-item[data-nav="' + n.id + '"]');
+  var shell = $('navShell');
+  var mm = $('megamenu');
+  if(item && shell && mm){
+    var left = item.getBoundingClientRect().left - shell.getBoundingClientRect().left;
+    var max = window.innerWidth - 24 - mm.offsetWidth;
+    mm.style.left = Math.max(12, Math.min(left, max)) + 'px';
+  }
   $('megamenu').classList.add('is-open');
   Array.prototype.forEach.call(document.querySelectorAll('.nav-item'), function(a){
     a.classList.toggle('is-open', a.dataset.nav === n.id);
   });
 }
 function closeMenu(){
+  clearTimeout(menuCloseTimer);
   menuOpenFor = null;
   $('megamenu').classList.remove('is-open');
   Array.prototype.forEach.call(document.querySelectorAll('.nav-item'), function(a){ a.classList.remove('is-open'); });
@@ -1724,30 +2043,73 @@ function renderCounts(){
   $('layoutSub').textContent = fmtTpl(t(LAYOUT_SUB_TPL), null, state.dieshot);
   $('miscSub').textContent = fmtTpl(t(MISC_SUB_TPL), null, state.misc);
 }
-/* ---------- 站点统计：总访问次数 + 当前在线（15 分钟窗口去重计数，CountAPI 公共计数器） ---------- */
+/* ---------- 站点统计：总访问次数 + 当前在线（15 分钟窗口去重计数，CountAPI 公共计数器） ----------
+   实时刷新：每 20 秒只读拉一次两个计数器；页面重新可见 / 窗口聚焦时立刻补一次；
+   标签页隐藏时暂停轮询，不给公共计数器添乱 */
 var STATS_API = 'https://countapi.mileshilliard.com/api/v1';
 var STATS_KEY = 'hieq-dieshot-site';
+var STATS_POLL = 20000;            /* 实时刷新间隔 */
+var STATS_BUSY = false;
+var ONLINE_CACHE = {};             /* 旧的 15 分钟窗口不再变化，缓存住省请求 */
 function fmtNum(n){ return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
-async function bumpViews(){
+function setStat(id, v){ var el = $(id); if(el) el.textContent = isNaN(v) ? '—' : fmtNum(v); }
+async function bumpViews(){        /* 进站 +1，并显示最新总数 */
   try{
     var d = await (await fetch(STATS_API + '/hit/' + STATS_KEY + '-views?ts=' + Date.now(), {cache:'no-store', keepalive:true})).json();
-    var v = Number(d && d.value);
-    $('statViews').textContent = isNaN(v) ? '—' : fmtNum(v);
-  }catch(e){ $('statViews').textContent = '—'; }
+    setStat('statViews', Number(d && d.value));
+  }catch(e){ setStat('statViews', NaN); }
 }
-async function refreshOnline(){
+/* 只读刷新（绝不给访问数 +1） */
+async function refreshStats(){
+  if(STATS_BUSY || document.hidden) return;
+  STATS_BUSY = true;
   try{
-    var bucket = Math.floor(Date.now() / 900000);      /* 15 分钟一桶 */
-    var last = 0;
-    try{ last = parseInt(localStorage.getItem('layout.presence') || '0', 10) || 0; }catch(e){}
-    if(last !== bucket){                               /* 同一访客每窗口只计一次 */
-      try{ localStorage.setItem('layout.presence', String(bucket)); }catch(e){}
-      await fetch(STATS_API + '/hit/' + STATS_KEY + '-on-' + bucket + '?ts=' + Date.now(), {cache:'no-store', keepalive:true});
-    }
-    var g = await (await fetch(STATS_API + '/get/' + STATS_KEY + '-on-' + bucket + '?ts=' + Date.now(), {cache:'no-store'})).json();
-    var ov = Number(g && g.value);
-    $('statOnline').textContent = isNaN(ov) ? '—' : fmtNum(ov);
-  }catch(e){ $('statOnline').textContent = '—'; }
+    try{
+      var d = await (await fetch(STATS_API + '/get/' + STATS_KEY + '-views?ts=' + Date.now(), {cache:'no-store'})).json();
+      setStat('statViews', Number(d && d.value));
+    }catch(e){}
+    try{
+      var bucket = Math.floor(Date.now() / 900000);      /* 15 分钟一桶 */
+      var last = 0;
+      try{ last = parseInt(localStorage.getItem('layout.presence') || '0', 10) || 0; }catch(e){}
+      if(last !== bucket){                               /* 同一访客每窗口只计一次 */
+        try{ localStorage.setItem('layout.presence', String(bucket)); }catch(e){}
+        await fetch(STATS_API + '/hit/' + STATS_KEY + '-on-' + bucket + '?ts=' + Date.now(), {cache:'no-store', keepalive:true});
+      }
+      /* 近 15 分钟访客 = 最近 3 个窗口的平均，消除「换桶归零」造成的骤降 */
+      var nums = [];
+      for(var b = bucket; b > bucket - 3; b--){
+        var v = ONLINE_CACHE[b];
+        if(v == null){
+          try{
+            var g = await (await fetch(STATS_API + '/get/' + STATS_KEY + '-on-' + b + '?ts=' + Date.now(), {cache:'no-store'})).json();
+            v = Number(g && g.value);
+            if(isNaN(v)) v = null;
+            else ONLINE_CACHE[b] = v;      /* 旧窗口不再变化，缓存住省请求 */
+          }catch(e){ v = null; }
+        }
+        if(v != null) nums.push(v);
+      }
+      if(nums.length){
+        var sum = 0;
+        for(var k = 0; k < nums.length; k++) sum += nums[k];
+        setStat('statOnline', Math.round(sum / nums.length));
+      }
+      /* 只保留最近几桶，避免缓存无限增长 */
+      Object.keys(ONLINE_CACHE).forEach(function(key){
+        if(Number(key) < bucket - 5) delete ONLINE_CACHE[key];
+      });
+    }catch(e){}
+  }finally{
+    STATS_BUSY = false;
+  }
+}
+function startStats(){
+  bumpViews();                                   /* 进站 +1 */
+  refreshStats();
+  setInterval(refreshStats, STATS_POLL);         /* 实时轮询两个计数器 */
+  document.addEventListener('visibilitychange', function(){ if(!document.hidden) refreshStats(); });
+  window.addEventListener('focus', refreshStats);   /* 切回本页立刻刷新 */
 }
 function firstImage(){
   /* 下拉菜单缩略图 = 最新一张 Dieshot */
@@ -1900,6 +2262,64 @@ function route(){
   window.scrollTo(0, 0);
 }
 
+/* ---------- 首页标题：字号自动适配到方框内（方框与下方按钮行等宽） ---------- */
+function fitHomeTitle(){
+  var t = document.querySelector('.home-title'), l = document.querySelector('.home-links');
+  if(!t || !l) return;
+  t.style.fontSize = ''; t.style.minHeight = ''; t.style.width = ''; t.style.height = '';   /* 回到 CSS 基准再量 */
+  var cs = getComputedStyle(t);
+  var base = parseFloat(cs.fontSize) || 46;
+  var boxH = t.getBoundingClientRect().height;             /* 基准高度：方框面积保持不变 */
+  var target = l.getBoundingClientRect().width;            /* 按钮行宽度 = 方框宽度（硬对齐） */
+  /* 内边距 + 描边不随字号缩放，先扣掉再算字号 */
+  var fixed = (parseFloat(cs.paddingLeft) || 0) + (parseFloat(cs.paddingRight) || 0)
+            + (parseFloat(cs.borderLeftWidth) || 0) + (parseFloat(cs.borderRightWidth) || 0);
+  /* 全量文本宽度用隐藏探针量：打字机效果期间 DOM 里只有前几个字母 */
+  var probe = document.createElement('span');
+  probe.style.cssText = 'position:absolute;left:-9999px;top:0;white-space:nowrap;'
+    + 'font-family:' + cs.fontFamily + ';font-size:' + base + 'px;font-weight:' + cs.fontWeight
+    + ';letter-spacing:' + cs.letterSpacing;
+  probe.textContent = (t.getAttribute('data-text') || t.textContent) + '_';   /* 连末尾闪烁的 _ 一起量 */
+  document.body.appendChild(probe);
+  var textW = probe.getBoundingClientRect().width;
+  if(probe.parentNode) probe.parentNode.removeChild(probe);
+  if(textW > 4 && target > 4){
+    var size = base * Math.max(1, target - fixed) / textW;  /* 缩字号把文字塞进方框 */
+    size = Math.max(base * 0.4, Math.min(size, base * 2.2));
+    t.style.width = target.toFixed(1) + 'px';              /* 宽度硬对齐按钮行，任何屏宽都不跑 */
+    t.style.height = boxH.toFixed(1) + 'px';               /* 高度锁定 → 方框面积不变 */
+    t.style.fontSize = size.toFixed(1) + 'px';
+  }
+}
+/* 字号/宽度要等字体真正就绪后才算得准：立刻算一次，之后每隔一段补算，
+   兼顾字体异步加载与按钮行宽度变化 */
+function scheduleFitHome(){
+  fitHomeTitle();
+  [200, 600, 1200, 2000].forEach(function(ms){ setTimeout(fitHomeTitle, ms); });
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(fitHomeTitle);
+}
+/* 打字机：每次进站逐字打出标题，末尾留一个闪烁的 _ */
+function typeHomeTitle(){
+  var t = document.querySelector('.home-title');
+  if(!t || t.getAttribute('data-typed') === '1') return;
+  var full = t.getAttribute('data-text') || t.textContent.trim();
+  t.setAttribute('data-text', full);
+  t.setAttribute('data-typed', '1');
+  if(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches){
+    t.textContent = full;
+    t.appendChild(el('span', 'home-caret', '_'));
+    return;
+  }
+  t.textContent = '';
+  var caret = el('span', 'home-caret', '_');
+  t.appendChild(caret);
+  var i = 0;
+  var timer = setInterval(function(){
+    if(i >= full.length){ clearInterval(timer); return; }   /* 打完后 _ 继续闪烁 */
+    caret.insertAdjacentText('beforebegin', full.charAt(i));
+    i++;
+  }, 70);
+}
 /* ---------- 渲染：首页 ---------- */
 function renderHome(){
   renderCounts();
@@ -1923,6 +2343,7 @@ function renderHome(){
   }
   $('footName').textContent = state.site.foot || 'HiEQ';
   $('footYear').textContent = '© ' + new Date().getFullYear();
+  fitHomeTitle();      /* 标题字号自动适配到方框内（与按钮行等宽） */
 }
 /* （展示条随机抽取 / 自动滚动引擎已随个人主页改版移除） */
 
@@ -2462,10 +2883,28 @@ async function downloadItem(it){
    - 折叠：点侧边箭头滑出屏幕边缘，再点滑回（并记忆状态）
    - 非首页 / 折叠 / 页面隐藏时暂停渲染；首次进首页才加载库与模型
    ============================================================ */
-var L2D = {app:null, model:null, state:'', timer:0, expr:-1, exprDev:'', blinkMgr:null, exprTimer:0};
+var L2D = {app:null, model:null, modelId:'', size:null, state:'', timer:0, expr:-1, exprDev:'', blinkMgr:null, exprTimer:0};
 var L2D_ZOOM = 1.30;   /* 放大倍率：调大 = 模型更大（四周透明边距被裁掉更多） */
 var L2D_DROP  = 0.12;  /* 向下偏移（按模型高度比例）：吃掉底部透明边距、贴近屏幕底边 */
 var L2D_SHIFT = 0.05;  /* 向右偏移（按模型宽度比例）：贴近屏幕右边距 */
+/* 可选桌宠模型：id 写进配置，url 是各自的 model3.json */
+var L2D_MODELS = [
+  {id:'heiq', name:'HEiQ', url:'live2d/model/cat.model3.json'},
+  {id:'null', name:'NULL', url:'live2d/model/null/cat.model3.json'}
+];
+var L2D_DEFAULT_MODEL = 'heiq';   /* 未配置时的默认模型（访客看到的就是它） */
+function l2dModelDef(id){
+  for(var i = 0; i < L2D_MODELS.length; i++) if(L2D_MODELS[i].id === id) return L2D_MODELS[i];
+  for(var j = 0; j < L2D_MODELS.length; j++) if(L2D_MODELS[j].id === L2D_DEFAULT_MODEL) return L2D_MODELS[j];
+  return L2D_MODELS[0];
+}
+/* 用哪个模型也是「本机」偏好（每个设备各自选），跟位置 / 大小 / 表情一样不写仓库 */
+function l2dModelCfg(){
+  var id = l2dCfg().model;
+  for(var i = 0; i < L2D_MODELS.length; i++) if(L2D_MODELS[i].id === id) return id;
+  return L2D_DEFAULT_MODEL;
+}
+function l2dActiveModel(){ return (L2D_EDIT.editing && L2D_EDIT.model) ? L2D_EDIT.model : l2dModelCfg(); }
 function l2dLoad(src, ready){
   if(ready && ready()) return Promise.resolve();   /* 运行库已就绪则跳过加载 */
   return new Promise(function(res, rej){
@@ -2474,6 +2913,47 @@ function l2dLoad(src, ready){
     s.onload = res; s.onerror = function(){ rej(new Error('加载失败：' + src)); };
     document.head.appendChild(s);
   });
+}
+/* 模型按盒子尺寸适配 + 定位（放大到溢出画布，超出部分被 canvas 自然裁掉 → 模型更大、间距更小）。
+   公式与首次加载完全一致，所以「改大小」的效果 == 以这个尺寸重新加载一次 */
+function l2dFit(){
+  var host = $('l2d'), model = L2D.model;
+  if(!host || !model || !L2D.size) return;
+  var fit = Math.min(host.clientWidth / L2D.size.w, host.clientHeight / L2D.size.h) * L2D_ZOOM;
+  model.scale.set(fit);
+  model.anchor.set(0.5, 1);
+  model.position.set(host.clientWidth / 2 + model.width * fit * L2D_SHIFT, host.clientHeight + model.height * fit * L2D_DROP);
+}
+/* 盒子大小变了：先把画布按新尺寸重画，再重新适配模型 */
+function l2dResize(){
+  var host = $('l2d');
+  if(host && L2D.app){
+    if(typeof L2D.app.resize === 'function') L2D.app.resize();
+    else if(L2D.app.renderer) L2D.app.renderer.resize(host.clientWidth, host.clientHeight);
+  }
+  l2dFit();
+}
+/* 载入 / 切换模型：位置、大小等设置原样保留（表情数量随模型不同，按钮与序号自动适配） */
+async function l2dLoadModel(id){
+  var def = l2dModelDef(id), app = L2D.app, host = $('l2d');
+  if(!app) return null;
+  if(L2D.model){
+    try{ app.stage.removeChild(L2D.model); }catch(e){}
+    try{ L2D.model.destroy({children:true, texture:true, baseTexture:true}); }
+    catch(e){ try{ L2D.model.destroy(); }catch(e2){} }
+    L2D.model = null;
+    L2D.blinkMgr = null;      /* 眨眼管理器属于上一个模型，换模型必须重找 */
+    L2D.expr = -1;
+  }
+  var model = await window.PIXI.live2d.Live2DModel.from(def.url, {autoInteract: false});
+  L2D.size = {w: model.width, h: model.height};   /* 原始尺寸先记下（缩放后 model.width 会跟着变） */
+  app.stage.addChild(model);
+  L2D.model = model; L2D.modelId = def.id; L2D.state = 'ready';
+  l2dFit();                                /* 透明边距裁切 + 定位（按当前盒子适配） */
+  applyL2dLayout();                        /* 套用已保存的位置 / 大小（换模型不重置） */
+  buildL2dExprChips();                     /* 表情数量随模型变：按钮重建 */
+  l2dSetExpression(l2dActiveCfg().expr);   /* 表情序号越界会自动回默认表情 */
+  return model;
 }
 async function initLive2D(){
   if(L2D.state) return;
@@ -2488,32 +2968,23 @@ async function initLive2D(){
       view: $('l2dCanvas'), backgroundAlpha: 0, resizeTo: host,
       autoDensity: true, resolution: Math.min(window.devicePixelRatio || 1, 2)
     });
-    var model = await PIXI.live2d.Live2DModel.from('live2d/model/cat.model3.json', {autoInteract: false});
-    /* 透明边距裁切：放大到溢出画布，超出部分被 canvas 自然裁掉 → 模型更大、间距更小 */
-    var fit = Math.min(host.clientWidth / model.width, host.clientHeight / model.height) * L2D_ZOOM;
-    model.scale.set(fit);
-    model.anchor.set(0.5, 1);
-    model.position.set(host.clientWidth / 2 + model.width * fit * L2D_SHIFT, host.clientHeight + model.height * fit * L2D_DROP);
-    app.stage.addChild(model);
-    L2D.app = app; L2D.model = model; L2D.state = 'ready';
-    applyL2dLayout();                        /* 套用已保存的位置微调 */
-    buildL2dExprChips();                     /* 模型就绪后按真实表情数重建表情按钮 */
-    l2dSetExpression(l2dActiveCfg().expr);   /* 套用默认表情（编辑模式中则跟随待存的选择） */
-    /* —— 仅保留：鼠标视线跟踪 + 模型自带眨眼 ——
-       （随机表情 / 随机动作已移除：切换表情会在透明背景上留下黑块） */
+    L2D.app = app;
+    /* —— 互动只绑定一次，永远跟着「当前模型」走（换模型不用重绑）：
+       鼠标视线跟踪 + 表情随机展示（开关控制），眨眼由表情联动自动开关 */
     try{
       window.addEventListener('mousemove', function(e){
-        if(!host.hidden) model.focus(e.clientX, e.clientY);
+        if(!host.hidden && L2D.model) L2D.model.focus(e.clientX, e.clientY);
       });
     }catch(err){
       try{ console.warn('[Live2D] 互动绑定失败（模型仍正常显示）：', err); }catch(e){}
     }
-    /* 移动设备视图：随机表情切换（点按或每 8 秒）；非默认表情时自动停眨眼。桌面保持安静 */
+    /* 表情随机展示（「表情随机展示」开关控制）：点按或每 8 秒切换；非默认表情时自动停眨眼 */
     $('l2dCanvas').addEventListener('click', l2dCycleExpression);
     L2D.exprTimer = setInterval(function(){
       if(document.hidden || $('l2d').hidden) return;
       l2dCycleExpression();
     }, 8000);
+    await l2dLoadModel(l2dActiveModel());
   }catch(err){
     /* 只有「库或模型加载失败」才隐藏桌宠，且不影响站点其余功能 */
     L2D.state = 'error';
@@ -2529,19 +3000,25 @@ function l2dShow(show){
   else initLive2D();
 }
 
-/* 移动设备视图的表情/眨眼联动：
-   点按或每 8 秒在「随机表情 ↔ 基准表情」间切换；只要不是空白表情就彻底停眨眼
+/* 表情/眨眼联动（「表情随机展示」开关）：
+   开 → 点按桌宠或每 8 秒换一张表情，**每次都是真随机**（从全部表情里等概率抽取，
+   只避开连抽同一张；空白表情与默认表情同貌，不重复占位）；
+   关 → 只显示设置好的表情。无论哪种，只要不是空白表情就彻底停眨眼
    （否则眨眼会覆写眼部参数、叠在表情造型上） */
+function l2dRandomOn(){
+  return !!l2dCfgClean(l2dActiveCfg()).random;
+}
 function l2dCycleExpression(){
-  if(L2D_EDIT && L2D_EDIT.editing) return;                       /* 编辑模式下不自动切表情 */
-  if(!(window.matchMedia && matchMedia('(max-width: 720px)').matches)) return;   /* 仅移动设备视图 */
+  if(!l2dRandomOn()) return;                                   /* 随机展示没开就不切 */
   if(!L2D.model) return;
-  var base = l2dCfgClean(l2dActiveCfg()).expr;      /* 本端（移动端）的基准表情 */
-  if(L2D.expr !== base){ l2dSetExpression(base); return; }       /* 回到基准表情 */
-  var pool = [], i;
-  for(i = 0; i < l2dExprCount(); i++) if(i !== base && !l2dExprIsBlank(i)) pool.push(i);
-  if(!pool.length) for(i = 0; i < l2dExprCount(); i++) if(i !== base) pool.push(i);
-  l2dSetExpression(pool.length ? pool[Math.floor(Math.random() * pool.length)] : base);
+  var n = l2dExprCount(), pool = [], i;
+  for(i = -1; i < n; i++){
+    if(i === L2D.expr) continue;                    /* 只避开连抽同一张，其余等概率 */
+    if(i >= 0 && l2dExprIsBlank(i)) continue;       /* 与默认表情同貌，不重复占位 */
+    pool.push(i);
+  }
+  if(!pool.length) return;
+  l2dSetExpression(pool[Math.floor(Math.random() * pool.length)]);
 }
 
 /* ---------- 表情切换（-1 = 模型自带默认表情） ----------
@@ -2635,14 +3112,44 @@ function l2dBlink(on){
 /* ---------- Live2D 编辑模式（管理模式）：鼠标拖拽调整首页位置 + 切换表情 ----------
    电脑端 / 移动端各存一份（位置 + 表情都互不影响，谁也盖不掉谁），
    位置按「视口百分比」记忆（换屏宽 / 手机上也不跑位）：x 右移为正、y 上移为正 */
-var L2D_EDIT = {editing:false, dev:'', cfg:null, backup:null, drag:null};
+var L2D_EDIT = {editing:false, kind:'', dev:'', model:'', cfg:null, backup:null, drag:null};
 var L2D_LIMIT = {xMin:-70, xMax:12, yMin:-25, yMax:45};
 function l2dDevice(){ return (window.matchMedia && matchMedia('(max-width: 720px)').matches) ? 'mobile' : 'desktop'; }
 function l2dActiveDev(){ return (L2D_EDIT.editing && L2D_EDIT.dev) ? L2D_EDIT.dev : l2dDevice(); }
+/* Live2D 的位置 / 表情 = 「这台设备 + 这个浏览器」的偏好：只存本机 localStorage，
+   不进 gallery.json —— 调桌宠不用提交仓库、等 Pages 重建（图库内容仍照常同步 GitHub） */
+/* 把任意历史格式的桌宠配置统一成 {desktop, mobile} 两份：
+   ① 已是两份（desktop/mobile）→ 各自取值
+   ② 早期单份 {x,y,expr}（仓库里全站共用 / 旧的本机存档）→ 两端各复制一份 */
+function l2dNormalize(src){
+  if(!src || typeof src !== 'object') return null;
+  var out = null;
+  if(src.desktop || src.mobile){
+    out = {desktop: l2dCfgClean(src.desktop || {}, 'desktop'), mobile: l2dCfgClean(src.mobile || {}, 'mobile')};
+  }else if(src.x != null || src.y != null || src.expr != null){
+    out = {desktop: l2dCfgClean(src, 'desktop'), mobile: l2dCfgClean(src, 'mobile')};
+  }
+  if(!out && !src.model) return null;
+  out = out || {desktop: l2dCfgClean({}, 'desktop'), mobile: l2dCfgClean({}, 'mobile')};
+  if(src.model) out.model = l2dModelDef(src.model).id;
+  return out;
+}
 function l2dCfg(){
-  var s = state.site.l2d;
-  if(s && typeof s === 'object') return s;
-  return lsGet('layout.l2d', null) || {};   /* 本机模式兜底（草稿不回写 site） */
+  var s = lsGet('layout.l2d', null);
+  if(s && typeof s === 'object'){
+    if(s.desktop || s.mobile || s.model) return s;
+    var pair = l2dNormalize(s);
+    if(pair){ lsSet('layout.l2d', pair); return pair; }
+  }
+  var old = state.site && state.site.l2d;
+  if(old && typeof old === 'object'){
+    /* 旧版曾在 gallery.json 里存过（全站共用）：首次进入时搬来本机，之后仓库不再带它 */
+    var seed = l2dNormalize(old);
+    if(seed) lsSet('layout.l2d', seed);
+    delete state.site.l2d;
+    return seed || {};
+  }
+  return {};
 }
 function l2dSlotOf(dev){
   var c = l2dCfg();
@@ -2651,29 +3158,36 @@ function l2dSlotOf(dev){
   if(c.x != null || c.y != null || c.expr != null) return c;   /* 旧版单份配置：两端共用，兼容老数据 */
   return {};
 }
-function l2dCfgClean(src){
+function l2dCfgClean(src, dev){
   var c = src || l2dActiveCfg();
+  dev = dev || l2dActiveDev();
   var e = parseInt(c.expr, 10);
   if(isNaN(e)) e = -1;
+  var sz = Number(c.size);
+  if(!sz || isNaN(sz)) sz = 1;
+  var rnd = Number(c.random);
+  if(c.random == null || isNaN(rnd)) rnd = (dev === 'mobile') ? 1 : 0;   /* 移动端默认开（保持原行为），电脑端默认关 */
   return {
     x: Math.max(L2D_LIMIT.xMin, Math.min(L2D_LIMIT.xMax, Math.round((Number(c.x) || 0) * 10) / 10)),
     y: Math.max(L2D_LIMIT.yMin, Math.min(L2D_LIMIT.yMax, Math.round((Number(c.y) || 0) * 10) / 10)),
-    expr: Math.max(-1, Math.min(l2dExprCount() - 1, e))
+    expr: Math.max(-1, Math.min(l2dExprCount() - 1, e)),
+    size: Math.max(0.5, Math.min(1.8, Math.round(sz * 100) / 100)),
+    random: rnd ? 1 : 0
   };
 }
 function l2dActiveCfg(){
   return (L2D_EDIT.editing && L2D_EDIT.cfg) ? L2D_EDIT.cfg : l2dSlotOf(l2dActiveDev());
 }
 /* 落盘：只覆盖当前编辑的那一端，另一端原样保留（旧版单份配置在这里顺手拆成两份） */
-function l2dSaveCfg(next, dev){
+function l2dSaveCfg(next, dev, model){
   dev = dev || l2dActiveDev();
   var out = {
-    desktop: l2dCfgClean(l2dSlotOf('desktop')),
-    mobile: l2dCfgClean(l2dSlotOf('mobile'))
+    desktop: l2dCfgClean(l2dSlotOf('desktop'), 'desktop'),
+    mobile: l2dCfgClean(l2dSlotOf('mobile'), 'mobile'),
+    model: l2dModelDef(model || l2dModelCfg()).id
   };
-  out[dev] = l2dCfgClean(next || out[dev]);
-  state.site.l2d = out;
-  lsSet('layout.l2d', out);
+  out[dev] = l2dCfgClean(next || out[dev], dev);
+  lsSet('layout.l2d', out);     /* 只落本机，不写仓库 */
   return out;
 }
 function applyL2dLayout(cfg){
@@ -2681,6 +3195,13 @@ function applyL2dLayout(cfg){
   var root = document.documentElement;
   root.style.setProperty('--l2d-x', ((Number(c.x) || 0) / 100 * window.innerWidth).toFixed(1) + 'px');
   root.style.setProperty('--l2d-y', ((Number(c.y) || 0) / 100 * window.innerHeight).toFixed(1) + 'px');
+  var host = $('l2d');
+  if(host){
+    var sz = String(c.size);
+    var prev = host.style.getPropertyValue('--l2d-scale');
+    host.style.setProperty('--l2d-scale', sz);
+    if(prev !== sz) l2dResize();   /* 大小变了：画布与模型重新适配 */
+  }
   return c;
 }
 /* 跨断点（电脑端 ↔ 移动端）时换上这一端自己的表情与位置 */
@@ -2697,12 +3218,26 @@ function l2dSyncUI(){
   var pt = $('l2dPosText');
   if(pt) pt.textContent = posTxt;
   var tip = $('l2dEditTip');
-  if(tip) tip.textContent = fmtTpl(t('拖拽桌宠调整位置（{d}）'), {d: devName});
+  if(tip) tip.textContent = (L2D_EDIT.kind === 'guest')
+    ? fmtTpl(t('访客样式：拖拽调整桌宠（{d}）'), {d: devName})
+    : fmtTpl(t('拖拽桌宠调整位置（{d}）'), {d: devName});
   var name = (c.expr < 0) ? t('默认') : fmtTpl(t('表情{n}'), {n: c.expr + 1});
+  var sizeTxt = Math.round(c.size * 100) + '%';
+  var sl = $('l2dSize');
+  if(sl && document.activeElement !== sl) sl.value = String(Math.round(c.size * 100));
+  var sv = $('l2dSizeVal');
+  if(sv) sv.textContent = sizeTxt;
+  var rndOn = !!c.random;
+  var sw = $('l2dRandom');
+  if(sw) sw.setAttribute('aria-checked', rndOn ? 'true' : 'false');
   var hint = $('l2dHint');
-  if(hint) hint.textContent = fmtTpl(t('位置（{d}）{p} · 表情：{e}'), {d: devName, p: posTxt, e: name});
+  if(hint) hint.textContent = fmtTpl(t('位置（{d}）{p} · 表情：{e} · 大小 {s} · 随机 {r} · 模型 {m}'),
+    {d: devName, p: posTxt, e: name, s: sizeTxt, r: t(rndOn ? '开' : '关'), m: l2dModelDef(l2dActiveModel()).name});
   Array.prototype.forEach.call(document.querySelectorAll('#l2dExprChips .l2d-chip'), function(b){
     b.classList.toggle('is-on', Number(b.dataset.expr) === c.expr);
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('#l2dModelChips .l2d-chip'), function(b){
+    b.classList.toggle('is-on', b.dataset.model === l2dActiveModel());
   });
 }
 function buildL2dExprChips(){
@@ -2726,14 +3261,46 @@ function buildL2dExprChips(){
   }
   l2dSyncUI();
 }
-function l2dEditOpen(){
-  if(!state.admin){ toast('先进入管理模式'); return; }
+/* 模型选择器（站点级设置：换模型不动位置 / 大小 / 表情序号等本机偏好） */
+function buildL2dModelChips(){
+  var box = $('l2dModelChips');
+  if(!box) return;
+  box.innerHTML = '';
+  var cur = l2dActiveModel();
+  L2D_MODELS.forEach(function(m){
+    var b = el('button', 'l2d-chip');
+    b.type = 'button';
+    b.dataset.model = m.id;
+    b.textContent = m.name;
+    if(b.firstChild) b.firstChild._zh = m.name;
+    b.classList.toggle('is-on', m.id === cur);
+    b.addEventListener('click', function(){ l2dSwitchModel(m.id); });
+    box.appendChild(b);
+  });
+}
+async function l2dSwitchModel(id){
+  if(!L2D_EDIT.editing || L2D_EDIT.model === id) return;
+  L2D_EDIT.model = id;
+  await l2dLoadModel(id);        /* 位置 / 大小原样保留 */
+  /* 表情序号是「模型内」的：新模型表情数不够就回默认表情 */
+  if(L2D_EDIT.cfg && L2D_EDIT.cfg.expr >= l2dExprCount()) L2D_EDIT.cfg.expr = -1;
+  l2dSetExpression(L2D_EDIT.cfg ? L2D_EDIT.cfg.expr : -1);
+  l2dSyncUI();
+}
+/* kind：'admin' = 管理面板进入（管理模式）；'guest' = 桌宠齿轮进入（访客可用）。
+   两者只动桌宠外观、都只存本机；访客入口与上传/删除等核心功能完全无关。 */
+function l2dEditOpen(kind){
+  kind = (kind === 'guest') ? 'guest' : 'admin';
+  if(kind === 'admin' && !state.admin){ toast('先进入管理模式'); return; }
+  if(L2D_EDIT.editing) return;
   $('modalPanel').classList.remove('is-open');
   if(location.hash !== '#/' && location.hash !== '') location.hash = '#/';  /* 回首页才看得到桌宠 */
   l2dShow(true);
   if($('l2d').classList.contains('is-hidden')) $('l2dTab').click();          /* 折叠着没法拖 */
   L2D_EDIT.editing = true;
+  L2D_EDIT.kind = kind;
   L2D_EDIT.dev = l2dDevice();                       /* 这一局只改当前端，另一端不受影响 */
+  L2D_EDIT.model = l2dModelCfg();                   /* 模型选择（站点级），取消时按它回滚 */
   L2D_EDIT.backup = l2dCfgClean(l2dSlotOf(L2D_EDIT.dev));
   L2D_EDIT.cfg = l2dCfgClean(L2D_EDIT.backup);
   $('l2d').classList.add('is-editing');
@@ -2741,23 +3308,29 @@ function l2dEditOpen(){
   applyL2dLayout(L2D_EDIT.cfg);
   l2dSyncUI();
 }
+/* 访客入口：桌宠齿轮 → 桌宠样式（不进管理模式，也碰不到上传等核心功能） */
+function l2dGuestOpen(){ l2dEditOpen('guest'); }
 function l2dEditClose(save){
   if(!L2D_EDIT.editing) return;
   var dev = L2D_EDIT.dev || l2dDevice();
+  var model = L2D_EDIT.model;
   L2D_EDIT.editing = false;
   L2D_EDIT.drag = null;
   $('l2d').classList.remove('is-editing', 'is-dragging');
   $('l2dEditBar').classList.add('hidden');
   if(save){
-    var out = l2dSaveCfg(L2D_EDIT.cfg, dev);
+    var out = l2dSaveCfg(L2D_EDIT.cfg, dev, model);   /* 位置 / 大小 / 表情 / 随机 / 模型一起落本机 */
     applyL2dLayout(out[dev]);
-    saveManifest('update site.l2d', 'dieshot');   /* 自行提示「已同步到 GitHub 仓库」/「已保存到本机草稿」 */
+    toast('Live2D 设置已保存到本机');   /* 只写 localStorage，不提交仓库 */
   }else{
+    if(model && model !== l2dModelCfg()) l2dLoadModel(l2dModelCfg());   /* 取消：模型一并回滚 */
     applyL2dLayout(L2D_EDIT.backup);
     l2dSetExpression(L2D_EDIT.backup.expr);
     toast('已放弃 Live2D 的改动');
   }
   L2D_EDIT.cfg = null;
+  L2D_EDIT.model = '';
+  L2D_EDIT.kind = '';
   l2dSyncUI();
 }
 function l2dDragStart(e){
@@ -2775,10 +3348,14 @@ function l2dDragMove(e){
   var cfg = l2dCfgClean({
     x: d.base.x + (e.clientX - d.x0) / window.innerWidth * 100,
     y: d.base.y - (e.clientY - d.y0) / window.innerHeight * 100,
-    expr: L2D_EDIT.cfg.expr
+    expr: L2D_EDIT.cfg.expr,
+    /* 关键：拖拽时必须带上当前大小 —— 少了它会被默认成 1，
+       拖的过程中桌宠缩回默认尺寸、保存又跳回原大小，看着就是「位置对不上」 */
+    size: L2D_EDIT.cfg.size
   });
   L2D_EDIT.cfg.x = cfg.x;
   L2D_EDIT.cfg.y = cfg.y;
+  L2D_EDIT.cfg.size = cfg.size;
   applyL2dLayout(cfg);
   l2dSyncUI();
 }
@@ -2837,15 +3414,42 @@ function openLogin(){
   $('modalLogin').classList.add('is-open');
   setTimeout(function(){ $('pw').focus(); }, 60);
 }
+var PW_TRIES = 0, PW_LOCK_UNTIL = 0;      /* 连续试错限速：越错锁得越久 */
+function loginFail(){
+  PW_TRIES++;
+  if(PW_TRIES >= 5){
+    PW_LOCK_UNTIL = Date.now() + Math.min(30000 * Math.pow(2, PW_TRIES - 5), 300000);   /* 30 秒起，指数退避到 5 分钟 */
+    $('pwErr').textContent = t('连续错误次数过多，已暂时锁定');
+  }else{
+    $('pwErr').textContent = t('口令不正确，请重试。');
+  }
+  $('pwErr').classList.remove('hidden');
+  $('pw').select();
+}
 async function tryLogin(){
-  var ok = false;
-  var hash = await sha256($('pw').value || '');
-  ok = (hash === (state.cfg.adminHash || DEFAULT_CFG.adminHash));
-  if(!ok){
+  if(Date.now() < PW_LOCK_UNTIL){
+    $('pwErr').textContent = fmtTpl(t('尝试太频繁，请 {s} 秒后再试'), {s: Math.ceil((PW_LOCK_UNTIL - Date.now()) / 1000)});
     $('pwErr').classList.remove('hidden');
-    $('pw').select();
     return;
   }
+  var pw = $('pw').value || '';
+  /* 1) 服务端校验（真正的鉴权：口令与 GitHub Token 都只存在 Worker 里） */
+  var r = await apiLogin(pw);
+  if(r.mode === 'server'){
+    if(!r.ok){ loginFail(); return; }
+    setSession(r.token);
+  }else{
+    /* 2) 无后端 → 本地哈希校验（GitHub Pages / 本地直开） */
+    if(!(await verifyPassword(pw, state.cfg.adminHash || DEFAULT_CFG.adminHash))){ loginFail(); return; }
+    try{
+      /* 旧格式（纯 SHA-256）自动升级为慢哈希，防止口令被离线撞库还原 */
+      if((state.cfg.adminHash || '').indexOf('p1$') !== 0){
+        state.cfg.adminHash = await hashPasswordNew(pw);
+        await saveManifest('upgrade admin hash', 'dieshot');
+      }
+    }catch(e){}
+  }
+  PW_TRIES = 0; PW_LOCK_UNTIL = 0;
   state.admin = true;
   $('modalLogin').classList.remove('is-open');
   setAdminUI();
@@ -3032,10 +3636,10 @@ function renderQueue(){
 async function commitQueue(){
   if(!state.admin) return;      /* 写操作仅限管理模式 */
   if(!state.queue.length) return;
-  var c = ghCfg();
   var mode = ghReady() ? 'github' : 'local';
   $('btnCommit').disabled = true;
 
+  var batch = [];               /* github 模式：把所有文件攒起来，最后一次提交 */
   for(var i = 0; i < state.queue.length; i++){
     var q = state.queue[i];
     try{
@@ -3063,15 +3667,14 @@ async function commitQueue(){
           ? ('images/misc/' + sub)
           : ('images/dieshot/' + ((tag0 && dirSlug(tag0)) || sub));
         var path = dirBase + '/' + safeName(q.name);
-        var put = await ghPutFile(path, buf, 'add ' + path);
-        if(!put.ok) throw new Error((put.data && put.data.message) || ('HTTP ' + put.status));
         item.src = path;
         item.file = path;
+        batch.push({path: path, buf: buf});
         /* 原图旁生成缩略图文件，访客预览只加载它 */
         if(th.blob){
           var tpath = thumbName(path);
-          var putT = await ghPutFile(tpath, await th.blob.arrayBuffer(), 'add ' + tpath);
-          if(putT.ok) item.thumb = tpath;
+          batch.push({path: tpath, buf: await th.blob.arrayBuffer()});
+          item.thumb = tpath;
         }
       }else{
         await IDB.put(item.id, await q.file.arrayBuffer());          /* 存字节：跨浏览器/克隆最稳 */
@@ -3085,16 +3688,36 @@ async function commitQueue(){
         item.local = true;
       }
       state.items.unshift(item);
-      q.state = mode === 'github' ? '已提交' : '已存本机'; q.phase = 'ok';
+      q.state = mode === 'github' ? '待提交' : '已存本机'; q.phase = mode === 'github' ? 'queued' : 'ok';
     }catch(err){
       q.state = '失败：' + (err && err.message ? err.message : '未知错误'); q.phase = 'err';
     }
     renderQueue();
   }
 
+  /* 一次提交打包：原图 + 缩略图 + 清单 = 1 个 commit → 只触发一次部署，
+     且清单与图片同时生效，不会出现「清单到了图还没到」 */
+  if(mode === 'github' && batch.length){
+    var m = manifestPayload(state.active);
+    batch.push({path: m.name, buf: m.buf});
+    var res = await ghCommitFiles(batch, 'add ' + batch.length + ' files');
+    state.queue.forEach(function(q){
+      if(q.phase === 'queued'){
+        if(res && res.ok){ q.state = '已提交'; q.phase = 'ok'; }
+        else{ q.state = '失败：' + (res && res.data && res.data.message ? res.data.message : ('HTTP ' + (res ? res.status : 0))); q.phase = 'err'; }
+      }
+    });
+    if(res && res.ok){
+      state.draft = false;
+      try{ lsSet(LS.draft, null); }catch(e){}
+      toast('已提交 ' + batch.length + ' 个文件（1 次部署）');
+    }
+    renderQueue();
+  }
+
   var done = state.queue.filter(function(q){ return q.phase === 'ok'; }).length;
   if(done){
-    await saveManifest('update gallery.json (+' + done + ' images)');
+    if(mode !== 'github') await saveManifest('update gallery.json (+' + done + ' images)');
     state.queue = state.queue.filter(function(q){ return q.phase !== 'ok'; });
     renderQueue();
     renderGallery();
@@ -3310,7 +3933,7 @@ function exportManifest(){
   var gc = ghCfg();
   var payload = {
     version: 1,
-    site: state.site,
+    site: siteForManifest(),
     config: {
       adminHash: state.cfg.adminHash || DEFAULT_CFG.adminHash,
       /* 安全：Token 绝不写进清单/仓库，只存在你自己的浏览器 localStorage 里 */
@@ -3326,6 +3949,20 @@ function exportManifest(){
   toast('已导出 gallery.json，可直接提交到仓库根目录');
 }
 
+/* 网格显示规格：每行几列（0 = 自动适配），选择存在本机 */
+function applyGridCols(){
+  var g = $('grid');
+  if(!g) return;
+  var n = parseInt(lsGet('layout.gridCols', '0'), 10) || 0;
+  if(n >= 2 && n <= 8) g.style.gridTemplateColumns = 'repeat(' + n + ', 1fr)';
+  else{ n = 0; g.style.gridTemplateColumns = ''; }
+  var lbl = $('gridLabel');
+  if(lbl) lbl.textContent = n ? fmtTpl(t('每行 {n} 列'), {n: n}) : t('自动排列');
+  var menu = $('gridMenu');
+  if(menu) Array.prototype.forEach.call(menu.querySelectorAll('.dd-opt'), function(o){
+    o.classList.toggle('is-on', Number(o.dataset.v) === n);
+  });
+}
 /* ---------- 事件绑定 ---------- */
 /* ---------- 吸顶/几何同步（模块级：renderGallery、route 也需调用） ----------
    融合态（顶栏+标签栏合体、底边收方角）只在 Layout 页成立；
@@ -3386,8 +4023,8 @@ function bind(){
   });
   $('btnPw').addEventListener('click', async function(){
     var v = $('newPw').value || '';
-    if(v.length < 4){ toast('口令至少 4 位'); return; }
-    state.cfg.adminHash = await sha256(v);
+    if(v.length < 8){ toast('口令至少 8 位'); return; }   /* 慢哈希也挡不住弱口令，请用长随机口令 */
+    state.cfg.adminHash = await hashPasswordNew(v);
     $('newPw').value = '';
     await saveManifest('update admin hash');
   });
@@ -3458,7 +4095,12 @@ function bind(){
   });
   /* 排序下拉：自绘液态玻璃菜单 */
   var ddBtn = $('sortBtn'), ddMenu = $('sortMenu');
-  function closeDD(){ ddMenu.classList.remove('is-open'); ddBtn.setAttribute('aria-expanded', 'false'); }
+  function closeDD(){
+    ddMenu.classList.remove('is-open'); ddBtn.setAttribute('aria-expanded', 'false');
+    var gM = $('gridMenu'), gB = $('gridBtn');
+    if(gM) gM.classList.remove('is-open');
+    if(gB) gB.setAttribute('aria-expanded', 'false');
+  }
   function syncSortUI(){
     $('sortLabel').textContent = (ddMenu.querySelector('.dd-opt[data-v="' + state.filter.sort + '"]') || {}).textContent || '最新在前';
     Array.prototype.forEach.call(ddMenu.querySelectorAll('.dd-opt'), function(o){
@@ -3471,15 +4113,36 @@ function bind(){
     ddBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
   });
   Array.prototype.forEach.call(ddMenu.querySelectorAll('.dd-opt'), function(opt){
-    opt.addEventListener('click', function(){
+    opt.addEventListener('click', function(e){
+      if(e && e.stopPropagation) e.stopPropagation();
       state.filter.sort = opt.dataset.v;
+      closeDD();                  /* 先收菜单 */
       syncSortUI();
-      closeDD();
       renderGallery();
     });
   });
   document.addEventListener('click', closeDD);   /* 点击菜单以外收起 */
   syncSortUI();
+
+  /* 显示选项：图片以每行几列排布（0 = 自动），选择记在本机 */
+  var gBtn = $('gridBtn'), gMenu = $('gridMenu');
+  gBtn.addEventListener('click', function(e){
+    e.stopPropagation();
+    closeDD();
+    var open = gMenu.classList.toggle('is-open');
+    gBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  Array.prototype.forEach.call(gMenu.querySelectorAll('.dd-opt'), function(opt){
+    opt.addEventListener('click', function(e){
+      if(e && e.stopPropagation) e.stopPropagation();
+      closeDD();                    /* 先收菜单：即使后面重绘出错也不会卡在展开态 */
+      try{
+        localStorage.setItem('layout.gridCols', String(Number(opt.dataset.v) || 0));
+      }catch(err){}
+      try{ applyGridCols(); }catch(err){}
+    });
+  });
+  applyGridCols();
   $('btnSearch').addEventListener('click', function(){
     if(location.hash.indexOf('#/layout') !== 0){ location.hash = '#/layout'; }
     setTimeout(function(){ $('q').focus(); $('q').select(); }, 80);
@@ -3574,37 +4237,59 @@ function bind(){
   var l2dHidden = false;
   try{ l2dHidden = localStorage.getItem('layout.l2dHidden') === '1'; }catch(e){}
   $('l2d').classList.toggle('is-hidden', l2dHidden);
-  /* 触屏点按桌宠 → 临时显示折叠按钮（桌面仍为悬停显示，不常驻） */
+  /* 触屏点按桌宠 → 收起按钮自动出现；几秒内没有操作再自动收起（每次操作都重新计时）。
+     桌面仍为悬停显示；折叠后按钮常显，不受这里影响 */
   var l2dTabTimer = 0;
-  $('l2dCanvas').addEventListener('pointerdown', function(){
+  function l2dTabPing(){
     $('l2d').classList.add('show-tab');
     clearTimeout(l2dTabTimer);
-    l2dTabTimer = setTimeout(function(){ $('l2d').classList.remove('show-tab'); }, 2500);
-  });
+    l2dTabTimer = setTimeout(function(){ $('l2d').classList.remove('show-tab'); }, 3000);
+  }
+  $('l2dCanvas').addEventListener('pointerdown', l2dTabPing);
+  $('l2dTab').addEventListener('pointerdown', l2dTabPing);   /* 按按钮也是「有操作」，重新计时 */
   $('l2dTab').addEventListener('click', function(){
     var h = $('l2d').classList.toggle('is-hidden');
     try{ localStorage.setItem('layout.l2dHidden', h ? '1' : '0'); }catch(e){}
     if(L2D.app){ h ? L2D.app.stop() : L2D.app.start(); }
   });
 
+  /* 访客桌宠样式入口：齿轮（显隐与收起箭头完全一致；只动桌宠、只存本机） */
+  $('l2dGear').addEventListener('pointerdown', l2dTabPing);
+  $('l2dGear').addEventListener('click', l2dGuestOpen);
+
   /* Live2D 编辑模式（管理模式）：拖拽调整首页位置 + 切换表情（电脑端 / 移动端各存一份） */
   $('btnL2dEdit').addEventListener('click', l2dEditOpen);
   $('btnL2dReset').addEventListener('click', function(){
     var dev = l2dActiveDev();
     var s = l2dCfgClean(l2dSlotOf(dev));
-    var out = l2dSaveCfg({x:0, y:0, expr: s.expr}, dev);   /* 只重置本端的位置，表情与另一端不动 */
+    var out = l2dSaveCfg({x:0, y:0, expr: s.expr, size: s.size, random: s.random}, dev);   /* 只重置本端的位置，表情 / 大小 / 随机开关与另一端不动 */
     applyL2dLayout(out[dev]);
     l2dSyncUI();
-    saveManifest('reset site.l2d position', 'dieshot');
     toast('已恢复默认位置');
   });
   $('l2dEditSave').addEventListener('click', function(){ l2dEditClose(true); });
   $('l2dEditCancel').addEventListener('click', function(){ l2dEditClose(false); });
   $('l2dEditReset').addEventListener('click', function(){
     if(!L2D_EDIT.editing) return;
-    L2D_EDIT.cfg = {x:0, y:0, expr:-1};   /* 先只改本端待存的配置，点「保存位置」才落盘 */
+    /* 只改本端待存的配置，点「保存」才落盘；随机开关回到本端默认（移动端开 / 电脑端关） */
+    L2D_EDIT.cfg = l2dCfgClean({x:0, y:0, expr:-1, size:1}, L2D_EDIT.dev);
     applyL2dLayout();
     l2dSetExpression(-1);
+    l2dSyncUI();
+  });
+  $('l2dRandom').addEventListener('click', function(){
+    if(!L2D_EDIT.editing) return;
+    var on = $('l2dRandom').getAttribute('aria-checked') !== 'true';
+    L2D_EDIT.cfg.random = on ? 1 : 0;
+    l2dSyncUI();
+    if(on) l2dCycleExpression();                       /* 立即切一次，让随机效果当场看得见 */
+    else l2dSetExpression(L2D_EDIT.cfg.expr);          /* 关掉就回到设置好的表情，别停在随机那张脸上 */
+  });
+  $('l2dSize').addEventListener('input', function(){
+    if(!L2D_EDIT.editing) return;
+    L2D_EDIT.cfg.size = Number($('l2dSize').value) / 100;
+    applyL2dLayout(L2D_EDIT.cfg);
+    l2dSyncUI();
   });
   var l2dCanvas = $('l2dCanvas');
   l2dCanvas.addEventListener('pointerdown', l2dDragStart);
@@ -3612,6 +4297,8 @@ function bind(){
   window.addEventListener('pointerup', l2dDragEnd);
   window.addEventListener('pointercancel', l2dDragEnd);
   window.addEventListener('resize', function(){ applyL2dLayout(); l2dSyncUI(); l2dSyncDevice(); });
+  window.addEventListener('resize', function(){ fitHomeTitle(); });   /* 标题字号随窗口重算 */
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(fitHomeTitle);   /* 字体就绪后再量一次 */
 
   /* 点击遮罩关闭（编辑弹窗除外：只能用「取消」/「保存」关闭，防误触丢改动） */
   ['modalLogin','modalPanel'].forEach(function(id){
@@ -3627,13 +4314,14 @@ function bind(){
   bind();
   await loadManifest();
   applyL2dLayout();                        /* 套用已保存的 Live2D 位置（模型未加载也先把框摆好） */
+  buildL2dModelChips();                    /* 模型选择按钮 */
   buildL2dExprChips();                     /* 表情按钮（模型就绪后会按真实表情数重建一次） */
   var savedLang = '';
   try{ savedLang = localStorage.getItem('layout.lang') || ''; }catch(e){}
   setLang(savedLang || ((navigator.language || '').toLowerCase().indexOf('en') === 0 ? 'en' : 'zh'));
-  bumpViews();                              /* 总访问 +1 并显示 */
-  refreshOnline();                          /* 当前在线 */
-  setInterval(refreshOnline, 60000);        /* 每分钟刷新在线人数 */
+  typeHomeTitle();                         /* 进站逐字打出标题，末尾闪烁 _ */
+  scheduleFitHome();                       /* 字体就绪后补算字号与宽度，保证大屏也精确对齐 */
+  startStats();                             /* 总访问 + 当前在线：每 20 秒实时刷新 */
 })();
 
 })();
